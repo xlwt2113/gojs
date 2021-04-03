@@ -7,7 +7,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 设备状态表对象 device_status
- * 
+ *
  * @author 王涛
  * @date 2021-04-03
  */
@@ -30,39 +30,49 @@ public class DeviceStatus extends BaseEntity
     @Excel(name = "备注")
     private String note;
 
-    public void setId(Long id) 
+    private DeviceInfo deviceInfo;
+
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Long getId() 
+    public Long getId()
     {
         return id;
     }
-    public void setDeviceId(Long deviceId) 
+    public void setDeviceId(Long deviceId)
     {
         this.deviceId = deviceId;
     }
 
-    public Long getDeviceId() 
+    public Long getDeviceId()
     {
         return deviceId;
     }
-    public void setDeviceStatus(Long deviceStatus) 
+    public void setDeviceStatus(Long deviceStatus)
     {
         this.deviceStatus = deviceStatus;
     }
 
-    public Long getDeviceStatus() 
+    public Long getDeviceStatus()
     {
         return deviceStatus;
     }
-    public void setNote(String note) 
+    public void setNote(String note)
     {
         this.note = note;
     }
 
-    public String getNote() 
+    public String getNote()
     {
         return note;
     }
