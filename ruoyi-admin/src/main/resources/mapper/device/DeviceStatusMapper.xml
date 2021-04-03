@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.device.mapper.DeviceStatusMapper">
+    
+    <resultMap type="DeviceStatus" id="DeviceStatusResult">
+        <result property="id"    column="id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceStatus"    column="device_status"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+
+    <sql id="selectDeviceStatusVo">
+        select id, device_id, device_status, update_time, note from device_status
+    </sql>
+
+    <select id="selectDeviceStatusList" parameterType="DeviceStatus" resultMap="DeviceStatusResult">
+        <include refid="selectDeviceStatusVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="deviceStatus != null "> and device_status = #{deviceStatus}</if>
+            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeviceStatusById" parameterType="Long" resultMap="DeviceStatusResult">
+        <include refid="selectDeviceStatusVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDeviceStatus" parameterType="DeviceStatus" useGeneratedKeys="true" keyProperty="id">
+        insert into device_status
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceStatus != null">device_status,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="note != null">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceStatus != null">#{deviceStatus},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="note != null">#{note},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeviceStatus" parameterType="DeviceStatus">
+        update device_status
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="note != null">note = #{note},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDeviceStatusById" parameterType="Long">
+        delete from device_status where id = #{id}
+    </delete>
+
+    <delete id="deleteDeviceStatusByIds" parameterType="String">
+        delete from device_status where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
