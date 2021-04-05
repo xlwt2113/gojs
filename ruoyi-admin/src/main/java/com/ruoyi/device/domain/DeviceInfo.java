@@ -9,7 +9,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 设备台账信息对象 device_info
- * 
+ *
  * @author 王涛
  * @date 2021-04-03
  */
@@ -23,6 +23,9 @@ public class DeviceInfo extends BaseEntity
     /** 设备名称 */
     @Excel(name = "设备名称")
     private String deviceName;
+
+    @Excel(name = "设备分类")
+    private String deviceType;
 
     /** 设备型号 */
     @Excel(name = "设备型号")
@@ -77,140 +80,148 @@ public class DeviceInfo extends BaseEntity
     @Excel(name = "备注")
     private String note;
 
-    public void setId(Integer id) 
+    public void setId(Integer id)
     {
         this.id = id;
     }
 
-    public Integer getId() 
+    public Integer getId()
     {
         return id;
     }
-    public void setDeviceName(String deviceName) 
+    public void setDeviceName(String deviceName)
     {
         this.deviceName = deviceName;
     }
 
-    public String getDeviceName() 
+    public String getDeviceName()
     {
         return deviceName;
     }
-    public void setDeviceModel(String deviceModel) 
+    public void setDeviceModel(String deviceModel)
     {
         this.deviceModel = deviceModel;
     }
 
-    public String getDeviceModel() 
+    public String getDeviceModel()
     {
         return deviceModel;
     }
-    public void setManufacturer(String manufacturer) 
+    public void setManufacturer(String manufacturer)
     {
         this.manufacturer = manufacturer;
     }
 
-    public String getManufacturer() 
+    public String getManufacturer()
     {
         return manufacturer;
     }
-    public void setDeviceIp1(String deviceIp1) 
+    public void setDeviceIp1(String deviceIp1)
     {
         this.deviceIp1 = deviceIp1;
     }
 
-    public String getDeviceIp1() 
+    public String getDeviceIp1()
     {
         return deviceIp1;
     }
-    public void setDeviceIp2(String deviceIp2) 
+    public void setDeviceIp2(String deviceIp2)
     {
         this.deviceIp2 = deviceIp2;
     }
 
-    public String getDeviceIp2() 
+    public String getDeviceIp2()
     {
         return deviceIp2;
     }
-    public void setDeviceIp3(String deviceIp3) 
+    public void setDeviceIp3(String deviceIp3)
     {
         this.deviceIp3 = deviceIp3;
     }
 
-    public String getDeviceIp3() 
+    public String getDeviceIp3()
     {
         return deviceIp3;
     }
-    public void setDeviceIp4(String deviceIp4) 
+    public void setDeviceIp4(String deviceIp4)
     {
         this.deviceIp4 = deviceIp4;
     }
 
-    public String getDeviceIp4() 
+    public String getDeviceIp4()
     {
         return deviceIp4;
     }
-    public void setDeviceIp5(String deviceIp5) 
+    public void setDeviceIp5(String deviceIp5)
     {
         this.deviceIp5 = deviceIp5;
     }
 
-    public String getDeviceIp5() 
+    public String getDeviceIp5()
     {
         return deviceIp5;
     }
-    public void setDeviceIp6(String deviceIp6) 
+    public void setDeviceIp6(String deviceIp6)
     {
         this.deviceIp6 = deviceIp6;
     }
 
-    public String getDeviceIp6() 
+    public String getDeviceIp6()
     {
         return deviceIp6;
     }
-    public void setDeviceIp7(String deviceIp7) 
+    public void setDeviceIp7(String deviceIp7)
     {
         this.deviceIp7 = deviceIp7;
     }
 
-    public String getDeviceIp7() 
+    public String getDeviceIp7()
     {
         return deviceIp7;
     }
-    public void setDeviceIp8(String deviceIp8) 
+    public void setDeviceIp8(String deviceIp8)
     {
         this.deviceIp8 = deviceIp8;
     }
 
-    public String getDeviceIp8() 
+    public String getDeviceIp8()
     {
         return deviceIp8;
     }
-    public void setInstallDate(Date installDate) 
+    public void setInstallDate(Date installDate)
     {
         this.installDate = installDate;
     }
 
-    public Date getInstallDate() 
+    public Date getInstallDate()
     {
         return installDate;
     }
-    public void setLocation(String location) 
+    public void setLocation(String location)
     {
         this.location = location;
     }
 
-    public String getLocation() 
+    public String getLocation()
     {
         return location;
     }
-    public void setNote(String note) 
+    public void setNote(String note)
     {
         this.note = note;
     }
 
-    public String getNote() 
+    public String getNote()
     {
         return note;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     @Override
@@ -230,6 +241,7 @@ public class DeviceInfo extends BaseEntity
             .append("deviceIp8", getDeviceIp8())
             .append("installDate", getInstallDate())
             .append("location", getLocation())
+                .append("deviceType", getDeviceType())
             .append("note", getNote())
             .toString();
     }
