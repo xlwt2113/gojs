@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('修改拓扑图维护')" />
+    <th:block th:include="include :: header('新增拓扑图维护')" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-topology-edit" th:object="${deviceTopology}">
-            <input name="id" th:field="*{id}" type="hidden">
-            <div class="form-group">
+        <form class="form-horizontal m" id="form-topology-add">
+            <div class="form-group">    
                 <label class="col-sm-3 control-label">拓扑图名称：</label>
                 <div class="col-sm-8">
-                    <input name="name" th:field="*{name}" class="form-control" type="text">
+                    <input name="name" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group">    
                 <label class="col-sm-3 control-label">拓扑图数据：</label>
                 <div class="col-sm-8">
-                    <textarea name="imageData" th:field="*{imageData}"  class="form-control" rows="25"></textarea>
+                    <input name="imageData" class="form-control" type="text">
                 </div>
             </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var prefix = ctx + "device/topology";
-        $("#form-topology-edit").validate({
+        var prefix = ctx + "device/topology"
+        $("#form-topology-add").validate({
             focusCleanup: true
         });
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-topology-edit').serialize());
+                $.operate.save(prefix + "/add", $('#form-topology-add').serialize());
             }
         }
     </script>

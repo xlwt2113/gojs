@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/device/topology")
+@RequestMapping("/device/topology2")
 public class TopologyController {
 
     private String prefix = "device/topology";
@@ -29,7 +29,7 @@ public class TopologyController {
     @GetMapping()
     public String event()
     {
-        return prefix + "/edit";
+        return prefix + "/edit2";
     }
 
     /**
