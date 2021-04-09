@@ -4,23 +4,12 @@
     <th:block th:include="include :: header('拓扑设备管理')"/>
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
     <script src="/js/gojs/DataInspector.js"></script>
-    <script src="/js/HttpClient.js"></script>
     <script src="/js/jquery.min.js"></script>
 
     <script>
 
 
-        var deviceType = [];
-
         function init() {
-            var client = new HttpClient();
-            // 获取设备字典
-            client.get('/device/topology/getDeviceTypes', function (response) {
-                var result = eval("(" + response + ")");
-                result.data.forEach(function (item) {
-                    deviceType.push(item.dictLabel);
-                });
-            });
 
             var GO = go.GraphObject.make;  // for conciseness in defining templates
 
@@ -280,11 +269,6 @@
                     properties: {
                         text: {show: Inspector.showIfNode},
                         caption: {show: Inspector.showIfNode},
-                        state: {
-                            show: Inspector.showIfNode,
-                            type: "select",
-                            choices: deviceType
-                        }
                     },
                     propertyModified: onSelectionChanged
                 });
@@ -303,7 +287,9 @@
         function save() {
             document.getElementById("mySavedModel").value = myDiagram.model.toJson();
             myDiagram.isModified = false;
-            $.post("/device/topology/saveImageJson", { imageJson: myDiagram.model.toJson().toString(), id: 1 } );
+            $.post("/device/topology/saveImageJson", { imageJson: myDiagram.model.toJson().toString(), id: $('#deviceTopologyId').val() } ,function () {
+                $.modal.msgSuccess("保存成功！")
+            });
         }
 
         function load() {
@@ -346,38 +332,19 @@
         <div>
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    拓扑图
-                </div>
-                <div class="panel-body">
-                    <p style="color: red">提示：选中拓扑图后点击导入，加载要编辑的拓扑图片！</p>
-                    <table>
-                        <tr>
-                            <th>拓扑图名称</th>
-                            <th>操作</th>
-                        </tr>
-                        <tr>
-                            <td>1111adsfds</td>
-                            <td>导入</td>
-                        </tr>
-                        <tr>
-                            <td>1111adsfds</td>
-                            <td>导入</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
                     设备关联
                 </div>
                 <div class="panel-body">
                     <p style="color: red">提示：查询要关联的设备，选中设备后，双击右侧图片节点进行关联！</p>
+
                 </div>
             </div>
             <button type="button" onclick="save()" class="btn btn-w-m btn-primary">保存</button>
             <button type="button" onclick="printDiagram()" class="btn btn-w-m btn-info">打印</button>
-            <button type="button" onclick="load()" class="btn btn-w-m btn-default">加载</button>
-            <textarea id="mySavedModel" style="width:100%;height:300px" th:field="${deviceTopology.imageData}"></textarea>
+<!--            <button type="button" onclick="load()" class="btn btn-w-m btn-default">加载</button>-->
+<!--            <textarea id="mySavedModel" style="width:100%;height:300px" th:field="${deviceTopology.imageData}"></textarea>-->
+            <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
+            <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
         </div>
     </div>
 </div>

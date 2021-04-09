@@ -82,7 +82,7 @@
 			<div class="tab-pane fade height-full" id="index">
 			  <ul class="nav">
 			    <li>
-			      <a class="menuItem" th:href="@{/system/main}">
+			      <a class="menuItem" th:href="${homePage}">
 			      <i class="fa fa-home"></i> <span class="nav-label">首页</span></a>
 			    </li>
 			  </ul>
@@ -279,7 +279,7 @@
             </button>
             <nav class="page-tabs menuTabs">
                 <div class="page-tabs-content">
-                    <a href="javascript:;" class="active menuTab" th:data-id="@{/system/main}">首页</a>
+                    <a href="javascript:;" class="active menuTab" th:data-id="${homePage}">首页</a>
                 </div>
             </nav>
             <button class="roll-nav roll-right tabRight">
@@ -292,7 +292,7 @@
 
         <div class="row mainContent" id="content-main" th:style="${#bools.isFalse(ignoreFooter)} ? |height: calc(100% - 91px)|">
             <iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" th:data-id="@{/system/main}"
-                    th:src="@{/system/main}" frameborder="0" seamless></iframe>
+                    th:src="${homePage}" frameborder="0" seamless></iframe>
         </div>
 
         <div th:if="${ignoreFooter}" class="footer">

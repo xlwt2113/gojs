@@ -29,7 +29,7 @@ import com.ruoyi.system.service.ISysMenuService;
 
 /**
  * 首页 业务处理
- * 
+ *
  * @author ruoyi
  */
 @Controller
@@ -61,6 +61,7 @@ public class SysIndexController extends BaseController
         mmap.put("demoEnabled", RuoYiConfig.isDemoEnabled());
         mmap.put("isDefaultModifyPwd", initPasswordIsModify(user.getPwdUpdateDate()));
         mmap.put("isPasswordExpired", passwordIsExpiration(user.getPwdUpdateDate()));
+        mmap.put("homePage",configService.selectConfigByKey("homepage"));
 
         // 菜单导航显示风格
         String menuStyle = configService.selectConfigByKey("sys.index.menuStyle");

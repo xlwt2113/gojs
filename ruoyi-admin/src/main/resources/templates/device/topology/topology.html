@@ -69,14 +69,14 @@
                     title: '拓扑名称',
                     width: '150px',
                 },
-                {
-                    field: 'imageData',
-                    title: '拓扑图数据',
-                },
+                // {
+                //     field: 'imageData',
+                //     title: '拓扑图数据',
+                //     width: '400px',
+                // },
                 {
                     title: '操作',
                     align: 'center',
-                    width: '190px',
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
