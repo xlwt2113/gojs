@@ -8,8 +8,16 @@
 
     <script>
 
+        // 设备列表
+        var deviceList = [];
+        // 选中的设备
+        var selectedDevice = undefined;
+
 
         function init() {
+
+            // 获取设备信息
+            getDeviceList();
 
             var GO = go.GraphObject.make;  // for conciseness in defining templates
 
@@ -29,8 +37,11 @@
                     var part = e.subject.part;
                     console.log('点击了' + part.data.key);
                     console.log(part.data.text);
-                    part.data.text = $('#test').val();
-                    myDiagram.model = go.Model.fromJson(myDiagram.model.toJson());
+                    // part.data.text = $('#test').val();
+                    if(selectedDevice){
+                        part.data.text = selectedDevice.deviceName
+                        myDiagram.model = go.Model.fromJson(myDiagram.model.toJson());
+                    }
                 });
 
             // when the document is modified, add a "*" to the title and enable the "Save" button
@@ -262,19 +273,18 @@
             }
 
 
-            myInspector = new Inspector("myInspector", myDiagram,
-                {
-                    // 不显示默认的已有属性
-                    includesOwnProperties: false,
-                    properties: {
-                        text: {show: Inspector.showIfNode},
-                        caption: {show: Inspector.showIfNode},
-                    },
-                    propertyModified: onSelectionChanged
-                });
+            // myInspector = new Inspector("myInspector", myDiagram,
+            //     {
+            //         // 不显示默认的已有属性
+            //         includesOwnProperties: false,
+            //         properties: {
+            //             text: {show: Inspector.showIfNode},
+            //             caption: {show: Inspector.showIfNode},
+            //         },
+            //         propertyModified: onSelectionChanged
+            //     });
 
         } // end init
-
 
         function onSelectionChanged() {
             var node = myDiagram.selection.first();
@@ -317,6 +327,15 @@
                 svgWindow.print();
             }, 1);
         }
+
+        // 获取设备信息
+        function getDeviceList() {
+            // $.post('/device/info/list',function(response){
+            //     deviceList = response.rows
+            // });
+
+
+        }
     </script>
 </head>
 <body class="gray-bg" onload="init()">
@@ -336,7 +355,7 @@
                 </div>
                 <div class="panel-body">
                     <p style="color: red">提示：查询要关联的设备，选中设备后，双击右侧图片节点进行关联！</p>
-
+                    <table id="bootstrap-table"></table>
                 </div>
             </div>
             <button type="button" onclick="save()" class="btn btn-w-m btn-primary">保存</button>
@@ -351,3 +370,66 @@
 <th:block th:include="include :: footer"/>
 </body>
 </html>
+
+
+<script th:inline="javascript">
+    var deviceModelDatas = [[${@dict.getType('device_info_model')}]];
+    var deviceTypeDatas = [[${@dict.getType('device_info_type')}]];
+
+    $(function(){
+        var options = {
+            url: "/device/info/list",
+            showSearch: false,
+            showRefresh: false,
+            showToggle: true,
+            showColumns: true,
+            onCheck: onCheck,
+            singleSelect: true,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'deviceName',
+                    title: '设备名称'
+                },
+                {
+                    field: 'deviceType',
+                    title: '设备分类',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(deviceTypeDatas, value);
+                    }
+                },
+                {
+                    field: 'deviceModel',
+                    title: '设备型号',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(deviceModelDatas, value);
+                    }
+                },
+                {
+                    field: 'manufacturer',
+                    title: '制造商'
+                },
+                {
+                    field: 'deviceIp1',
+                    title: '设备IP1'
+                }]
+        };
+        $.table.init(options);
+
+        $("input[name='toggle']").click();
+    })
+
+    function onCheck(row, $element){
+        selectedDevice = row;
+        console.log(row);
+        // var arrays = $.table.selectColumns("id");
+        // console.log(arrays);
+        // if(arrays.length>1){
+        //     alert('只能一个设备进行操作！');
+        //     $("input[name='btSelectItem']").attr("checked", false);
+        // }else{
+        //     console.log(row);
+        // }
+    }
+</script>
