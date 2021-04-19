@@ -141,6 +141,19 @@ public class DeviceTopologyController extends BaseController
     }
 
     /**
+     * 查看拓扑图
+     * @param id
+     * @param mmap
+     * @return
+     */
+    @GetMapping("/view/{id}")
+    public String view(@PathVariable("id") Long id, ModelMap mmap){
+        DeviceTopology deviceTopology = deviceTopologyService.selectDeviceTopologyById(id);
+        mmap.put("deviceTopology", deviceTopology);
+        return prefix + "/view";
+    }
+
+    /**
      * 保存拓扑数据
      * @param imageJson
      * @param id

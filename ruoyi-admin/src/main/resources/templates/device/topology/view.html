@@ -8,16 +8,7 @@
 
     <script>
 
-        // 设备列表
-        var deviceList = [];
-        // 选中的设备
-        var selectedDevice = undefined;
-
-
         function init() {
-
-            // 获取设备信息
-            getDeviceList();
 
             var GO = go.GraphObject.make;  // for conciseness in defining templates
 
@@ -31,23 +22,6 @@
                     });
 
 
-            // 双击节点事件
-            myDiagram.addDiagramListener("ObjectDoubleClicked",
-                function (e) {
-                    var part = e.subject.part;
-                    console.log('点击了' + part.data.key);
-                    console.log(part.data.deviceName);
-                    // part.data.text = $('#test').val();
-                    if(selectedDevice){
-                        part.data.deviceName = selectedDevice.deviceName;
-                        part.data.deviceType = $.table.selectDictLabel(deviceTypeDatas, selectedDevice.deviceType).replace("<span class=''>","").replace("</span>","");
-                        part.data.deviceModel = $.table.selectDictLabel(deviceModelDatas, selectedDevice.deviceModel).replace("<span class=''>","").replace("</span>","");
-                        part.data.ip = selectedDevice.deviceIp1;
-                        part.data.imgUrl = "/img/devType/"+selectedDevice.deviceType+".jpeg";
-                        console.log(selectedDevice.deviceIp1);
-                        myDiagram.model = go.Model.fromJson(myDiagram.model.toJson());
-                    }
-                });
 
             // when the document is modified, add a "*" to the title and enable the "Save" button
             myDiagram.addDiagramListener("Modified", function (e) {
@@ -118,53 +92,6 @@
             }
 
             // define the Node templates for regular nodes
-
-            myDiagram.nodeTemplateMap.add("router",  // the default category
-                GO(go.Node, "Table", nodeStyle(),
-                    // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
-                    GO(go.Panel, "Auto",
-                        GO(go.Shape, "Rectangle",
-                            {fill: "#282c34", stroke: "#00A9C9", strokeWidth: 3.5},
-                            new go.Binding("figure", "figure")),
-                        GO(go.TextBlock, textStyle(),
-                            {
-                                margin: 8,
-                                maxSize: new go.Size(160, NaN),
-                                wrap: go.TextBlock.WrapFit,
-                                // editable: true
-                            },
-                            new go.Binding("text").makeTwoWay()),
-                    ),
-                    // four named ports, one on each side:
-                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
-                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
-                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
-                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
-                ));
-
-            myDiagram.nodeTemplateMap.add("switch",  // the default category
-                GO(go.Node, "Table", nodeStyle(),
-                    // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
-                    GO(go.Panel, "Auto",
-                        GO(go.Shape, "Rectangle",
-                            {fill: "#282c34", stroke: "#00A9C9", strokeWidth: 3.5},
-                            new go.Binding("figure", "figure")),
-                        GO(go.TextBlock, textStyle(),
-                            {
-                                margin: 8,
-                                maxSize: new go.Size(160, NaN),
-                                wrap: go.TextBlock.WrapFit,
-                                // editable: true
-                            },
-                            new go.Binding("text").makeTwoWay())
-                    ),
-                    // four named ports, one on each side:
-                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
-                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
-                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
-                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
-                ));
-
             myDiagram.nodeTemplateMap.add("test",  // the default category
                 GO(go.Node, "Auto",nodeStyle(),
                     GO(go.Shape, "RoundedRectangle",{'fill':'lightblue'}),
@@ -250,20 +177,20 @@
             load();  // load an initial diagram from some JSON text
 
             // initialize the Palette that is on the left side of the page
-            myPalette =
-                GO(go.Palette, "myPaletteDiv",  // must name or refer to the DIV HTML element
-                    {
-                        // Instead of the default animation, use a custom fade-down
-                        "animationManager.initialAnimationStyle": go.AnimationManager.None,
-                        "InitialAnimationStarting": animateFadeDown, // Instead, animate with this function
-
-                        nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
-                        model: new go.GraphLinksModel([  // specify the contents of the Palette
-                            // {category: "router", text: "路由器",devType:'设备分类',devClass:'设备型号',ip:'192.178.1.1',img:""},
-                            // {category: "switch", text: "交换机"},
-                            {category: "test", deviceName: "", deviceModel: "", deviceType: "", ip: "",imgUrl:"https://gojs.net.cn/images/intro/100x65.pn"  },
-                        ])
-                    });
+            // myPalette =
+            //     GO(go.Palette, "myPaletteDiv",  // must name or refer to the DIV HTML element
+            //         {
+            //             // Instead of the default animation, use a custom fade-down
+            //             "animationManager.initialAnimationStyle": go.AnimationManager.None,
+            //             "InitialAnimationStarting": animateFadeDown, // Instead, animate with this function
+            //
+            //             nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
+            //             model: new go.GraphLinksModel([  // specify the contents of the Palette
+            //                 // {category: "router", text: "路由器",devType:'设备分类',devClass:'设备型号',ip:'192.178.1.1',img:""},
+            //                 // {category: "switch", text: "交换机"},
+            //                 {category: "test", deviceName: "", deviceModel: "", deviceType: "", ip: "",imgUrl:"https://gojs.net.cn/images/intro/100x65.pn"  },
+            //             ])
+            //         });
 
             // This is a re-implementation of the default animation, except it fades in from downwards, instead of upwards.
             function animateFadeDown(e) {
@@ -333,41 +260,24 @@
                 svgWindow.print();
             }, 1);
         }
-
-        // 获取设备信息
-        function getDeviceList() {
-            // $.post('/device/info/list',function(response){
-            //     deviceList = response.rows
-            // });
-
-
-        }
     </script>
 </head>
 <body class="gray-bg" onload="init()">
 <div class="row" id="sample">
-    <div class="col-sm-10">
+    <div class="col-sm-9">
         <div style="width: 100%; display: flex; justify-content: space-between">
-            <div id="myPaletteDiv" style="width: 180px; margin-right: 2px; background-color: #282c34;"></div>
             <div id="myDiagramDiv" style="flex-grow: 1; height: 870px; background-color: #282c34;"></div>
         </div>
     </div>
-    <div class="col-sm-2">
-        <div id="myInspector"></div>
-        <div>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    设备关联
-                </div>
-                <div class="panel-body">
-                    <p style="color: red">提示：查询要关联的设备，选中设备后，双击右侧图片节点进行关联！</p>
-                    <table id="bootstrap-table"></table>
-                </div>
+    <div class="col-sm-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>饼状图</h5>
             </div>
-            <button type="button" onclick="save()" class="btn btn-w-m btn-primary">保存</button>
-            <button type="button" onclick="printDiagram()" class="btn btn-w-m btn-info">打印</button>
-<!--            <button type="button" onclick="load()" class="btn btn-w-m btn-default">加载</button>-->
-<!--            <textarea id="mySavedModel" style="width:100%;height:300px" th:field="${deviceTopology.imageData}"></textarea>-->
+            <div class="ibox-content">
+                <div class="echarts" id="echarts-pie-chart" _echarts_instance_="ec_1618838263635" style="-webkit-tap-highlight-color: transparent; user-select: none; position: relative;"><div style="position: relative; overflow: hidden; width: 778px; height: 240px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="778" height="240" style="position: absolute; left: 0px; top: 0px; width: 778px; height: 240px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px sans-serif; padding: 5px; left: 271px; top: 93px; pointer-events: none;">访问来源 <br>搜索引擎 : 1548 (60.42%)</div></div>
+            </div>
+        </div>
             <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
             <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
         </div>
@@ -377,57 +287,41 @@
 </body>
 </html>
 
-
+<th:block th:include="include :: echarts-js" />
 <script th:inline="javascript">
-    var deviceModelDatas = [[${@dict.getType('device_info_model')}]];
-    var deviceTypeDatas = [[${@dict.getType('device_info_type')}]];
-
-    $(function(){
-        var options = {
-            url: "/device/info/list",
-            showSearch: false,
-            showRefresh: false,
-            showToggle: true,
-            showColumns: true,
-            onCheck: onCheck,
-            singleSelect: true,
-            columns: [{
-                checkbox: true
-            },
-                {
-                    field: 'deviceName',
-                    title: '设备名称'
-                },
-                {
-                    field: 'deviceType',
-                    title: '设备分类',
-                    formatter: function (value, row, index) {
-                        return $.table.selectDictLabel(deviceTypeDatas, value);
-                    }
-                },
-                {
-                    field: 'deviceModel',
-                    title: '设备型号',
-                    formatter: function (value, row, index) {
-                        return $.table.selectDictLabel(deviceModelDatas, value);
-                    }
-                },
-                {
-                    field: 'manufacturer',
-                    title: '制造商'
-                },
-                {
-                    field: 'deviceIp1',
-                    title: '设备IP1'
-                }]
-        };
-        $.table.init(options);
-
-        $("input[name='toggle']").click();
-    })
-
-    // 获取选中设备
-    function onCheck(row, $element){
-        selectedDevice = row;
-    }
+    var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
+    var pieoption = {
+        title : {
+            text: '某站点用户访问来源',
+            subtext: '纯属虚构',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient : 'vertical',
+            x : 'left',
+            data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+        },
+        calculable : true,
+        series : [
+            {
+                name:'访问来源',
+                type:'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[
+                    {value:335, name:'直接访问'},
+                    {value:310, name:'邮件营销'},
+                    {value:234, name:'联盟广告'},
+                    {value:135, name:'视频广告'},
+                    {value:1548, name:'搜索引擎'}
+                ]
+            }
+        ]
+    };
+    pieChart.setOption(pieoption);
+    $(window).resize(pieChart.resize);
 </script>
