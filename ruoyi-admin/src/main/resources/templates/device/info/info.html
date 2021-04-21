@@ -73,6 +73,7 @@
     var deviceModelDatas = [[${@dict.getType('device_info_model')}]];
     var deviceTypeDatas = [[${@dict.getType('device_info_type')}]];
     var prefix = ctx + "device/info";
+    var viewUrl= prefix + "/view/";
 
     $(function () {
         var options = {
@@ -92,7 +93,10 @@
                 },
                 {
                     field: 'deviceName',
-                    title: '设备名称'
+                    title: '设备名称',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0)" onclick="openView(\'' + row.id + '\')">' + row.deviceName +'</a>';
+                    }
                 },
                 {
                     field: 'deviceType',
@@ -169,6 +173,11 @@
         };
         $.table.init(options);
     });
+
+
+    function openView(id){
+        $.modal.open("查看", viewUrl + id,650, 500);
+    }
 </script>
 </body>
 </html>

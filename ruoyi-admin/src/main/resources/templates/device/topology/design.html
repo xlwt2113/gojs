@@ -44,6 +44,7 @@
                         part.data.deviceModel = $.table.selectDictLabel(deviceModelDatas, selectedDevice.deviceModel).replace("<span class=''>","").replace("</span>","");
                         part.data.ip = selectedDevice.deviceIp1;
                         part.data.imgUrl = "/img/devType/"+selectedDevice.deviceType+".jpeg";
+                        part.data.key = selectedDevice.id;
                         console.log(selectedDevice.deviceIp1);
                         myDiagram.model = go.Model.fromJson(myDiagram.model.toJson());
                     }

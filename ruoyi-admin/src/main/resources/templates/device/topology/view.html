@@ -21,7 +21,12 @@
                         "hoverDelay": 10,  // controls how long to wait motionless (msec) before showing Adornment
                     });
 
-
+            // 双击节点事件
+            myDiagram.addDiagramListener("ObjectDoubleClicked",
+                function (e) {
+                    var part = e.subject.part;
+                    $.modal.open("查看设备详情", '/device/info/view/' + part.data.key,650, 500);
+                });
 
             // when the document is modified, add a "*" to the title and enable the "Save" button
             myDiagram.addDiagramListener("Modified", function (e) {
@@ -108,10 +113,10 @@
                         GO(go.TextBlock, { row: 4, column: 1 }, new go.Binding("text", "ip"))
                     ),
                     // four named ports, one on each side:
-                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
-                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
-                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
-                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, false),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, false,false),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, false, false),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, false, false)
                 )
             );
 
@@ -176,22 +181,6 @@
 
             load();  // load an initial diagram from some JSON text
 
-            // initialize the Palette that is on the left side of the page
-            // myPalette =
-            //     GO(go.Palette, "myPaletteDiv",  // must name or refer to the DIV HTML element
-            //         {
-            //             // Instead of the default animation, use a custom fade-down
-            //             "animationManager.initialAnimationStyle": go.AnimationManager.None,
-            //             "InitialAnimationStarting": animateFadeDown, // Instead, animate with this function
-            //
-            //             nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
-            //             model: new go.GraphLinksModel([  // specify the contents of the Palette
-            //                 // {category: "router", text: "路由器",devType:'设备分类',devClass:'设备型号',ip:'192.178.1.1',img:""},
-            //                 // {category: "switch", text: "交换机"},
-            //                 {category: "test", deviceName: "", deviceModel: "", deviceType: "", ip: "",imgUrl:"https://gojs.net.cn/images/intro/100x65.pn"  },
-            //             ])
-            //         });
-
             // This is a re-implementation of the default animation, except it fades in from downwards, instead of upwards.
             function animateFadeDown(e) {
                 var diagram = e.diagram;
@@ -206,60 +195,13 @@
             }
 
 
-            // myInspector = new Inspector("myInspector", myDiagram,
-            //     {
-            //         // 不显示默认的已有属性
-            //         includesOwnProperties: false,
-            //         properties: {
-            //             text: {show: Inspector.showIfNode},
-            //             caption: {show: Inspector.showIfNode},
-            //         },
-            //         propertyModified: onSelectionChanged
-            //     });
-
         } // end init
 
-        function onSelectionChanged() {
-            var node = myDiagram.selection.first();
-            if (!(node instanceof go.Node)) return;
-            var data = node.data;
-            data.caption = data.state;
-        }
-
-        // Show the diagram's model in JSON format that the user may edit
-        function save() {
-            document.getElementById("mySavedModel").value = myDiagram.model.toJson();
-            myDiagram.isModified = false;
-            $.post("/device/topology/saveImageJson", { imageJson: myDiagram.model.toJson().toString(), id: $('#deviceTopologyId').val() } ,function () {
-                $.modal.msgSuccess("保存成功！")
-            });
-        }
 
         function load() {
             myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
         }
 
-        // print the diagram by opening a new window holding SVG images of the diagram contents for each page
-        function printDiagram() {
-            var svgWindow = window.open();
-            if (!svgWindow) return;  // failure to open a new Window
-            var printSize = new go.Size(700, 960);
-            var bnds = myDiagram.documentBounds;
-            var x = bnds.x;
-            var y = bnds.y;
-            while (y < bnds.bottom) {
-                while (x < bnds.right) {
-                    var svg = myDiagram.makeSvg({scale: 1.0, position: new go.Point(x, y), size: printSize});
-                    svgWindow.document.body.appendChild(svg);
-                    x += printSize.width;
-                }
-                x = bnds.x;
-                y += printSize.height;
-            }
-            setTimeout(function () {
-                svgWindow.print();
-            }, 1);
-        }
     </script>
 </head>
 <body class="gray-bg" onload="init()">
@@ -278,7 +220,7 @@
                 <div class="echarts" id="echarts-pie-chart" _echarts_instance_="ec_1618838263635" style="-webkit-tap-highlight-color: transparent; user-select: none; position: relative;"><div style="position: relative; overflow: hidden; width: 778px; height: 240px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="778" height="240" style="position: absolute; left: 0px; top: 0px; width: 778px; height: 240px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px sans-serif; padding: 5px; left: 271px; top: 93px; pointer-events: none;">访问来源 <br>搜索引擎 : 1548 (60.42%)</div></div>
             </div>
         </div>
-            <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
+            <input type="text" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
             <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
         </div>
     </div>

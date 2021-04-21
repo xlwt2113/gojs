@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('设备台账信息列表')"/>
+</head>
+<body class="white-bg">
+
+
+
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <table class="table table-bordered" th:object="${deviceInfo}">
+        <tr>
+            <th style="background-color: #efefef">设备名称</th>
+            <td th:text="*{deviceName}"></td>
+            <th style="background-color: #efefef">设备分类</th>
+            <td th:text="*{@dict.getLabel('device_info_type', deviceType)}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">设备型号</th>
+            <td th:text="*{@dict.getLabel('device_info_model', deviceModel)}"></td>
+            <th style="background-color: #efefef">制造商</th>
+            <td th:text="*{manufacturer}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">设备IP1</th>
+            <td th:text="*{deviceIp1}"></td>
+            <th style="background-color: #efefef">设备IP2</th>
+            <td th:text="*{deviceIp2}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">设备IP3</th>
+            <td th:text="*{deviceIp3}"></td>
+            <th style="background-color: #efefef">设备IP4</th>
+            <td th:text="*{deviceIp4}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">设备IP4</th>
+            <td th:text="*{deviceIp5}"></td>
+            <th style="background-color: #efefef">设备IP6</th>
+            <td th:text="*{deviceIp6}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">设备IP7</th>
+            <td th:text="*{deviceIp7}"></td>
+            <th style="background-color: #efefef">设备IP8</th>
+            <td th:text="*{deviceIp8}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">安装日期</th>
+            <td th:text="${#dates.format(deviceInfo.installDate, 'yyyy-MM-dd')}"></td>
+            <th style="background-color: #efefef">安装位置</th>
+            <td th:text="*{location}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">备注</th>
+            <td th:text="*{note}" colspan="3"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    function submitHandler() {
+        $.modal.close();
+    }
+</script>

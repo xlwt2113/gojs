@@ -33,7 +33,7 @@
 					</div>
 				</form>
 			</div>
-			
+
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="monitor:job:add">
 	                <i class="fa fa-plus"></i> 新增
@@ -51,7 +51,7 @@
 		            <i class="fa fa-list"></i> 日志
 		        </a>
 	        </div>
-        
+
 	        <div class="col-sm-12 select-table table-striped">
 			    <table id="bootstrap-table"></table>
 			</div>
@@ -114,6 +114,10 @@
 		        		return statusTools(row);
 		        	}
 		        },
+					{
+						field: 'remark',
+						title: '备注'
+					},
 		        {
 		            field: 'createTime',
 		            title: '创建时间',
@@ -137,7 +141,7 @@
 		    };
 		    $.table.init(options);
 		});
-        
+
 		/* 调度任务状态显示 */
 		function statusTools(row) {
 		    if (row.status == 1) {
@@ -146,7 +150,7 @@
     			return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="stop(\'' + row.jobId + '\', \'' + row.jobGroup + '\')"></i> ';
     		}
 		}
-		
+
 		/* 立即执行一次 */
 		function run(jobId) {
 			$.modal.confirm("确认要立即执行一次任务吗？", function() {

@@ -21,7 +21,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 设备台账信息Controller
- * 
+ *
  * @author 王涛
  * @date 2021-04-03
  */
@@ -39,6 +39,16 @@ public class DeviceInfoController extends BaseController
     public String info()
     {
         return prefix + "/info";
+    }
+
+
+    @RequiresPermissions("device:info:view")
+    @GetMapping("/view/{id}")
+    public String view(@PathVariable("id") Integer id, ModelMap mmap)
+    {
+        DeviceInfo deviceInfo = deviceInfoService.selectDeviceInfoById(id);
+        mmap.put("deviceInfo", deviceInfo);
+        return prefix + "/view";
     }
 
     /**
