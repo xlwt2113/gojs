@@ -202,6 +202,18 @@
             myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
         }
 
+        // 变更设备状态
+        function chanageState() {
+            var model = myDiagram.model;
+            var arr = model.nodeDataArray;
+            for (var i = 0; i < arr.length; i++) {
+                data = arr[i];
+                data.deviceType = "aaaabbbbcccc";
+                console.log(data.key);
+                model.updateTargetBindings(data);
+            }
+        }
+
     </script>
 </head>
 <body class="gray-bg" onload="init()">
@@ -212,6 +224,7 @@
         </div>
     </div>
     <div class="col-sm-3">
+<!--        <button onclick="chanageState()">test</button>-->
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>饼状图</h5>
