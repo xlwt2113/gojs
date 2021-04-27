@@ -23,6 +23,14 @@
                             </select>
                         </li>
                         <li>
+                            <label>设备分类：</label>
+                            <select name="deviceType" th:with="type=${@dict.getType('device_info_type')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
                             <label>制造商：</label>
                             <input type="text" name="manufacturer"/>
                         </li>
@@ -113,6 +121,10 @@
                     }
                 },
                 {
+                    field: 'dept.deptName',
+                    title: '归属部门'
+                },
+                {
                     field: 'manufacturer',
                     title: '制造商'
                 },
@@ -132,22 +144,22 @@
                     field: 'deviceIp4',
                     title: '设备IP4'
                 },
-                {
-                    field: 'deviceIp5',
-                    title: '设备IP5'
-                },
-                {
-                    field: 'deviceIp6',
-                    title: '设备IP6'
-                },
-                {
-                    field: 'deviceIp7',
-                    title: '设备IP7'
-                },
-                {
-                    field: 'deviceIp8',
-                    title: '设备IP8'
-                },
+                // {
+                //     field: 'deviceIp5',
+                //     title: '设备IP5'
+                // },
+                // {
+                //     field: 'deviceIp6',
+                //     title: '设备IP6'
+                // },
+                // {
+                //     field: 'deviceIp7',
+                //     title: '设备IP7'
+                // },
+                // {
+                //     field: 'deviceIp8',
+                //     title: '设备IP8'
+                // },
                 {
                     field: 'installDate',
                     title: '安装日期'

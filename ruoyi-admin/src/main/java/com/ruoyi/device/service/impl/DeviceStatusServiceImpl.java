@@ -13,7 +13,7 @@ import com.ruoyi.common.core.text.Convert;
  * 设备状态表Service业务层处理
  * 
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 @Service
 public class DeviceStatusServiceImpl implements IDeviceStatusService 

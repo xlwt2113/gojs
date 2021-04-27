@@ -7,7 +7,7 @@ import com.ruoyi.device.domain.DeviceStatus;
  * 设备状态表Service接口
  * 
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 public interface IDeviceStatusService 
 {

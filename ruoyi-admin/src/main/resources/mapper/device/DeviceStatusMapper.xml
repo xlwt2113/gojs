@@ -9,34 +9,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deviceId"    column="device_id"    />
         <result property="deviceStatus"    column="device_status"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="pingAvg"    column="ping_avg"    />
         <result property="note"    column="note"    />
+        <result property="pingMin"    column="ping_min"    />
+        <result property="pingMax"    column="ping_max"    />
+        <result property="pingLoss"    column="ping_loss"    />
         <association property="deviceInfo" javaType="DeviceInfo" resultMap="DeviceInfoResult"></association>
     </resultMap>
 
     <resultMap type="DeviceInfo" id="DeviceInfoResult">
-        <result property="deviceName" column="device_name"/>
-        <result property="deviceModel" column="device_model"/>
-        <result property="manufacturer" column="manufacturer"/>
-        <result property="deviceIp1" column="device_ip1"/>
-        <result property="deviceIp2" column="device_ip2"/>
-        <result property="deviceIp3" column="device_ip3"/>
-        <result property="deviceIp4" column="device_ip4"/>
-        <result property="deviceIp5" column="device_ip5"/>
-        <result property="deviceIp6" column="device_ip6"/>
-        <result property="deviceIp7" column="device_ip7"/>
-        <result property="deviceIp8" column="device_ip8"/>
-        <result property="installDate" column="install_date"/>
-        <result property="location" column="location"/>
-        <result property="note" column="note"/>
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceModel"    column="device_model"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="deviceIp1"    column="device_ip1"    />
+        <result property="deviceIp2"    column="device_ip2"    />
+        <result property="deviceIp3"    column="device_ip3"    />
+        <result property="deviceIp4"    column="device_ip4"    />
+        <result property="deviceIp5"    column="device_ip5"    />
+        <result property="deviceIp6"    column="device_ip6"    />
+        <result property="deviceIp7"    column="device_ip7"    />
+        <result property="deviceIp8"    column="device_ip8"    />
+        <result property="installDate"    column="install_date"    />
+        <result property="location"    column="location"    />
+        <result property="note"    column="note"    />
+        <result property="miningArea"    column="mining_area"    />
+        <result property="company"    column="company"    />
+        <result property="deptId"    column="dept_id"    />
     </resultMap>
 
     <sql id="selectDeviceStatusVo">
-        SELECT
-            t.id,
-            t.device_id,
-            t.device_status,
-            t.update_time,
-            t.note,
+   SELECT
+            t.id, device_id, device_status, update_time, ping_avg, t.note, ping_min, ping_max, ping_loss,
             device_name,
             device_model,
             manufacturer,
@@ -59,18 +63,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDeviceStatusList" parameterType="DeviceStatus" resultMap="DeviceStatusResult">
         <include refid="selectDeviceStatusVo"/>
         <where>
-            <if test="deviceInfo !=null and deviceInfo.deviceName != null "> and device_name like concat('%', #{deviceInfo.deviceName}, '%')</if>
+            <if test="deviceInfo !=null and deviceInfo.deviceName != null and deviceInfo.deviceName != '' "> and device_name like concat('%', #{deviceInfo.deviceName}, '%')</if>
             <if test="deviceId != null "> and device_id = #{deviceId}</if>
             <if test="deviceStatus != null "> and device_status = #{deviceStatus}</if>
-            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="updateTimeBegin != null and updateTimeBegin != ''"> and update_time >= #{updateTimeBegin}</if>
+            <if test="updateTimeEnd != null and updateTimeEnd !=''"> and update_time <![CDATA[<=]]>  #{updateTimeEnd}</if>
+            <if test="pingAvg != null "> and ping_avg = #{pingAvg}</if>
+            <if test="pingMin != null "> and ping_min = #{pingMin}</if>
+            <if test="pingMax != null "> and ping_max = #{pingMax}</if>
+            <if test="pingLoss != null "> and ping_loss = #{pingLoss}</if>
         </where>
-
         order by update_time desc
     </select>
 
     <select id="selectDeviceStatusById" parameterType="Long" resultMap="DeviceStatusResult">
         <include refid="selectDeviceStatusVo"/>
-        where id = #{id}
+        where t.id = #{id}
     </select>
 
     <insert id="insertDeviceStatus" parameterType="DeviceStatus" useGeneratedKeys="true" keyProperty="id">
@@ -79,13 +87,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceId != null">device_id,</if>
             <if test="deviceStatus != null">device_status,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="pingAvg != null">ping_avg,</if>
             <if test="note != null">note,</if>
+            <if test="pingMin != null">ping_min,</if>
+            <if test="pingMax != null">ping_max,</if>
+            <if test="pingLoss != null">ping_loss,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deviceId != null">#{deviceId},</if>
             <if test="deviceStatus != null">#{deviceStatus},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="pingAvg != null">#{pingAvg},</if>
             <if test="note != null">#{note},</if>
+            <if test="pingMin != null">#{pingMin},</if>
+            <if test="pingMax != null">#{pingMax},</if>
+            <if test="pingLoss != null">#{pingLoss},</if>
          </trim>
     </insert>
 
@@ -95,7 +111,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceId != null">device_id = #{deviceId},</if>
             <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="pingAvg != null">ping_avg = #{pingAvg},</if>
             <if test="note != null">note = #{note},</if>
+            <if test="pingMin != null">ping_min = #{pingMin},</if>
+            <if test="pingMax != null">ping_max = #{pingMax},</if>
+            <if test="pingLoss != null">ping_loss = #{pingLoss},</if>
         </trim>
         where id = #{id}
     </update>

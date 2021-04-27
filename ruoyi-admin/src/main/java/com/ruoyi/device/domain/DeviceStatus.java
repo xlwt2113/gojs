@@ -9,14 +9,18 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 设备状态表对象 device_status
  *
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 public class DeviceStatus extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private DeviceInfo deviceInfo;
+
     /**  */
     private Long id;
+
+    private String updateTimeBegin,updateTimeEnd;
 
     /** 设备Id */
     @Excel(name = "设备Id")
@@ -26,19 +30,25 @@ public class DeviceStatus extends BaseEntity
     @Excel(name = "设备实时状态")
     private Long deviceStatus;
 
+    /** ping平均时延 */
+    @Excel(name = "ping平均时延")
+    private Long pingAvg;
+
     /** 备注 */
     @Excel(name = "备注")
     private String note;
 
-    private DeviceInfo deviceInfo;
+    /** 最小时延 */
+    @Excel(name = "最小时延")
+    private Long pingMin;
 
-    public DeviceInfo getDeviceInfo() {
-        return deviceInfo;
-    }
+    /** 最大时延 */
+    @Excel(name = "最大时延")
+    private Long pingMax;
 
-    public void setDeviceInfo(DeviceInfo deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
+    /** 丢包率 */
+    @Excel(name = "丢包率")
+    private Long pingLoss;
 
     public void setId(Long id)
     {
@@ -67,6 +77,15 @@ public class DeviceStatus extends BaseEntity
     {
         return deviceStatus;
     }
+    public void setPingAvg(Long pingAvg)
+    {
+        this.pingAvg = pingAvg;
+    }
+
+    public Long getPingAvg()
+    {
+        return pingAvg;
+    }
     public void setNote(String note)
     {
         this.note = note;
@@ -76,6 +95,57 @@ public class DeviceStatus extends BaseEntity
     {
         return note;
     }
+    public void setPingMin(Long pingMin)
+    {
+        this.pingMin = pingMin;
+    }
+
+    public Long getPingMin()
+    {
+        return pingMin;
+    }
+    public void setPingMax(Long pingMax)
+    {
+        this.pingMax = pingMax;
+    }
+
+    public Long getPingMax()
+    {
+        return pingMax;
+    }
+    public void setPingLoss(Long pingLoss)
+    {
+        this.pingLoss = pingLoss;
+    }
+
+    public Long getPingLoss()
+    {
+        return pingLoss;
+    }
+
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public String getUpdateTimeBegin() {
+        return updateTimeBegin;
+    }
+
+    public void setUpdateTimeBegin(String updateTimeBegin) {
+        this.updateTimeBegin = updateTimeBegin;
+    }
+
+    public String getUpdateTimeEnd() {
+        return updateTimeEnd;
+    }
+
+    public void setUpdateTimeEnd(String updateTimeEnd) {
+        this.updateTimeEnd = updateTimeEnd;
+    }
 
     @Override
     public String toString() {
@@ -84,7 +154,11 @@ public class DeviceStatus extends BaseEntity
             .append("deviceId", getDeviceId())
             .append("deviceStatus", getDeviceStatus())
             .append("updateTime", getUpdateTime())
+            .append("pingAvg", getPingAvg())
             .append("note", getNote())
+            .append("pingMin", getPingMin())
+            .append("pingMax", getPingMax())
+            .append("pingLoss", getPingLoss())
             .toString();
     }
 }

@@ -2,6 +2,7 @@ package com.ruoyi.device.domain;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.entity.SysDept;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -11,11 +12,13 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 设备台账信息对象 device_info
  *
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 public class DeviceInfo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    private SysDept dept;
 
     /**  */
     private Integer id;
@@ -24,12 +27,13 @@ public class DeviceInfo extends BaseEntity
     @Excel(name = "设备名称")
     private String deviceName;
 
-    @Excel(name = "设备分类")
-    private String deviceType;
-
     /** 设备型号 */
     @Excel(name = "设备型号")
     private String deviceModel;
+
+    /** 设备类型。对应字典表 */
+    @Excel(name = "设备类型。对应字典表")
+    private String deviceType;
 
     /** 制造商 */
     @Excel(name = "制造商")
@@ -80,6 +84,18 @@ public class DeviceInfo extends BaseEntity
     @Excel(name = "备注")
     private String note;
 
+    /** 所属煤矿 */
+    @Excel(name = "所属煤矿")
+    private String miningArea;
+
+    /** 所属集团 */
+    @Excel(name = "所属集团")
+    private String company;
+
+    /** 归属部门 */
+    @Excel(name = "归属部门")
+    private Long deptId;
+
     public void setId(Integer id)
     {
         this.id = id;
@@ -106,6 +122,15 @@ public class DeviceInfo extends BaseEntity
     public String getDeviceModel()
     {
         return deviceModel;
+    }
+    public void setDeviceType(String deviceType)
+    {
+        this.deviceType = deviceType;
+    }
+
+    public String getDeviceType()
+    {
+        return deviceType;
     }
     public void setManufacturer(String manufacturer)
     {
@@ -215,13 +240,40 @@ public class DeviceInfo extends BaseEntity
     {
         return note;
     }
-
-    public String getDeviceType() {
-        return deviceType;
+    public void setMiningArea(String miningArea)
+    {
+        this.miningArea = miningArea;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public String getMiningArea()
+    {
+        return miningArea;
+    }
+    public void setCompany(String company)
+    {
+        this.company = company;
+    }
+
+    public String getCompany()
+    {
+        return company;
+    }
+    public void setDeptId(Long deptId)
+    {
+        this.deptId = deptId;
+    }
+
+    public Long getDeptId()
+    {
+        return deptId;
+    }
+
+    public SysDept getDept() {
+        return dept;
+    }
+
+    public void setDept(SysDept dept) {
+        this.dept = dept;
     }
 
     @Override
@@ -230,6 +282,7 @@ public class DeviceInfo extends BaseEntity
             .append("id", getId())
             .append("deviceName", getDeviceName())
             .append("deviceModel", getDeviceModel())
+            .append("deviceType", getDeviceType())
             .append("manufacturer", getManufacturer())
             .append("deviceIp1", getDeviceIp1())
             .append("deviceIp2", getDeviceIp2())
@@ -241,8 +294,10 @@ public class DeviceInfo extends BaseEntity
             .append("deviceIp8", getDeviceIp8())
             .append("installDate", getInstallDate())
             .append("location", getLocation())
-                .append("deviceType", getDeviceType())
             .append("note", getNote())
+            .append("miningArea", getMiningArea())
+            .append("company", getCompany())
+            .append("deptId", getDeptId())
             .toString();
     }
 }

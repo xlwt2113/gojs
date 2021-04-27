@@ -23,7 +23,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 设备状态表Controller
  * 
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 @Controller
 @RequestMapping("/device/status")

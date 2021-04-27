@@ -7,7 +7,7 @@ import com.ruoyi.device.domain.DeviceInfo;
  * 设备台账信息Service接口
  * 
  * @author 王涛
- * @date 2021-04-03
+ * @date 2021-04-27
  */
 public interface IDeviceInfoService 
 {
