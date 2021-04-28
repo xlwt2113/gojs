@@ -21,7 +21,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 设备状态表Controller
- * 
+ *
  * @author 王涛
  * @date 2021-04-27
  */
@@ -122,5 +122,11 @@ public class DeviceStatusController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(deviceStatusService.deleteDeviceStatusByIds(ids));
+    }
+
+    @PostMapping("/deviceStatus")
+    @ResponseBody
+    public AjaxResult searchDeviceStatus(String deviceIds){
+        return AjaxResult.success(deviceStatusService.selectDeviceStatusListByDeviceIds(deviceIds));
     }
 }

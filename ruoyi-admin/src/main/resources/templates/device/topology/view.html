@@ -1,12 +1,43 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('拓扑设备管理')"/>
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
     <script src="/js/gojs/DataInspector.js"></script>
     <script src="/js/jquery.min.js"></script>
 
-    <script>
+    <script th:inline="javascript">
+        var deviceStatusDatas = [[${@dict.getType('device_status')}]];
+
+        var pieoption = {
+            title: {
+                text: '设备状态统计',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: ['好', '一般', '差']
+            },
+            calculable: true,
+            series: [
+                {
+                    name: '状态分类',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        {value: 0, name: '好'},
+                        {value: 0, name: '一般'},
+                        {value: 1, name: '差'},
+                    ]
+                }
+            ]
+        };
 
         function init() {
 
@@ -25,7 +56,7 @@
             myDiagram.addDiagramListener("ObjectDoubleClicked",
                 function (e) {
                     var part = e.subject.part;
-                    $.modal.open("查看设备详情", '/device/info/view/' + part.data.key,650, 500);
+                    $.modal.open("查看设备详情", '/device/info/view/' + part.data.key, 650, 500);
                 });
 
             // when the document is modified, add a "*" to the title and enable the "Save" button
@@ -98,23 +129,31 @@
 
             // define the Node templates for regular nodes
             myDiagram.nodeTemplateMap.add("test",  // the default category
-                GO(go.Node, "Auto",nodeStyle(),
-                    GO(go.Shape, "RoundedRectangle",{'fill':'lightblue'}),
+                GO(go.Node, "Auto", nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle", {'fill': 'lightblue'}),
                     GO(go.Panel, "Table",
-                        { defaultAlignment: go.Spot.Left },
-                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 64, height: 64}, new go.Binding("source", "imgUrl")),
-                        GO(go.TextBlock, { row: 1, column: 0, columnSpan: 2, font: "bold 12pt sans-serif" },
-                            new go.Binding("text", "deviceName"),{margin: 5}),
-                        GO(go.TextBlock, { row: 2, column: 0 }, "设备型号:",{margin: 5}),
-                        GO(go.TextBlock, { row: 2, column: 1 }, new go.Binding("text", "deviceModel")),
-                        GO(go.TextBlock, { row: 3, column: 0 }, "设备分类:",{margin: 5}),
-                        GO(go.TextBlock, { row: 3, column: 1 }, new go.Binding("text", "deviceType")),
-                        GO(go.TextBlock, { row: 4, column: 0 }, "  IP地址:",{margin: 5}),
-                        GO(go.TextBlock, { row: 4, column: 1 }, new go.Binding("text", "ip"))
+                        {defaultAlignment: go.Spot.Left},
+                        GO(go.Picture, {
+                            row: 0,
+                            column: 0,
+                            columnSpan: 2,
+                            width: 64,
+                            height: 64
+                        }, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, {row: 1, column: 0, columnSpan: 2, font: "bold 12pt sans-serif"},
+                            new go.Binding("text", "deviceName"), {margin: 5}),
+                        GO(go.TextBlock, {row: 2, column: 0}, "设备型号:", {margin: 5}),
+                        GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "deviceModel")),
+                        GO(go.TextBlock, {row: 3, column: 0}, "设备分类:", {margin: 5}),
+                        GO(go.TextBlock, {row: 3, column: 1}, new go.Binding("text", "deviceType")),
+                        GO(go.TextBlock, {row: 4, column: 0}, "  IP地址:", {margin: 5}),
+                        GO(go.TextBlock, {row: 4, column: 1}, new go.Binding("text", "ip")),
+                        GO(go.TextBlock, {row: 5, column: 0}, "  状态:", {margin: 5}),
+                        GO(go.TextBlock, {row: 5, column: 1}, new go.Binding("text", "status"))
                     ),
                     // four named ports, one on each side:
                     makePort("T", go.Spot.Top, go.Spot.TopSide, false, false),
-                    makePort("L", go.Spot.Left, go.Spot.LeftSide, false,false),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, false, false),
                     makePort("R", go.Spot.Right, go.Spot.RightSide, false, false),
                     makePort("B", go.Spot.Bottom, go.Spot.BottomSide, false, false)
                 )
@@ -214,6 +253,57 @@
             }
         }
 
+        //获取设备状态信息
+        function searchDeviceStatus() {
+            var model = myDiagram.model;
+            var arr = model.nodeDataArray;
+            var deviceIds = '';
+            for (var i = 0; i < arr.length; i++) {
+                var nodeData = arr[i];
+                deviceIds = deviceIds + nodeData.key + ','
+            }
+
+            $.post("/device/status/deviceStatus", {deviceIds: deviceIds + '0'}, function (response) {
+                var model = myDiagram.model;
+                var arr = model.nodeDataArray;
+                // 循环节点匹配，更新设备状态
+                for (var i = 0; i < arr.length; i++) {
+                    var nodeData = arr[i];
+                    $.each(response.data, function (i, item) {
+                        if (nodeData.key == item.deviceId) {
+                            nodeData.status = $.table.selectDictLabelNoSpan(deviceStatusDatas, item.deviceStatus);
+                            model.updateTargetBindings(nodeData);
+                        }
+                    });
+                }
+
+                var goodCnt = 0;
+                var commonCnt = 0;
+                var badCnt = 0;
+                $.each(response.data, function (i, item) {
+                    if(item.deviceStatus == 1){
+                        goodCnt++;
+                    }
+                    if(item.deviceStatus == 2){
+                        commonCnt++;
+                    }
+                    if(item.deviceStatus == 3){
+                        badCnt++;
+                    }
+                });
+
+                pieoption.series[0].data = [
+                    {value: goodCnt, name: '好'},
+                    {value: commonCnt, name: '一般'},
+                    {value: badCnt, name: '差'},
+                ];
+
+                pieChart.setOption(pieoption);
+
+            });
+        }
+
+
     </script>
 </head>
 <body class="gray-bg" onload="init()">
@@ -224,59 +314,36 @@
         </div>
     </div>
     <div class="col-sm-3">
-<!--        <button onclick="chanageState()">test</button>-->
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>饼状图</h5>
             </div>
             <div class="ibox-content">
-                <div class="echarts" id="echarts-pie-chart" _echarts_instance_="ec_1618838263635" style="-webkit-tap-highlight-color: transparent; user-select: none; position: relative;"><div style="position: relative; overflow: hidden; width: 778px; height: 240px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="778" height="240" style="position: absolute; left: 0px; top: 0px; width: 778px; height: 240px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px sans-serif; padding: 5px; left: 271px; top: 93px; pointer-events: none;">访问来源 <br>搜索引擎 : 1548 (60.42%)</div></div>
+                <div class="echarts" id="echarts-pie-chart" _echarts_instance_="ec_1618838263635"
+                     style="-webkit-tap-highlight-color: transparent; user-select: none; position: relative;">
+                    <div style="position: relative; overflow: hidden; width: 778px; height: 240px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;">
+                        <canvas data-zr-dom-id="zr_0" width="778" height="240"
+                                style="position: absolute; left: 0px; top: 0px; width: 778px; height: 240px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
+                    </div>
+                    <div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px sans-serif; padding: 5px; left: 271px; top: 93px; pointer-events: none;">
+                        访问来源 <br>搜索引擎 : 1548 (60.42%)
+                    </div>
+                </div>
             </div>
         </div>
-            <input type="text" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
-            <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
-        </div>
+        <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
+        <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
+        <button onclick="searchDeviceStatus()">更新设备状态</button>
     </div>
+</div>
 </div>
 <th:block th:include="include :: footer"/>
 </body>
 </html>
 
-<th:block th:include="include :: echarts-js" />
+<th:block th:include="include :: echarts-js"/>
 <script th:inline="javascript">
     var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
-    var pieoption = {
-        title : {
-            text: '某站点用户访问来源',
-            subtext: '纯属虚构',
-            x:'center'
-        },
-        tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        legend: {
-            orient : 'vertical',
-            x : 'left',
-            data:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
-        },
-        calculable : true,
-        series : [
-            {
-                name:'访问来源',
-                type:'pie',
-                radius : '55%',
-                center: ['50%', '60%'],
-                data:[
-                    {value:335, name:'直接访问'},
-                    {value:310, name:'邮件营销'},
-                    {value:234, name:'联盟广告'},
-                    {value:135, name:'视频广告'},
-                    {value:1548, name:'搜索引擎'}
-                ]
-            }
-        ]
-    };
     pieChart.setOption(pieoption);
     $(window).resize(pieChart.resize);
 </script>

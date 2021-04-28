@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             location
         FROM
             device_status AS t
-                LEFT JOIN
+                inner JOIN
             device_info AS i ON t.device_id = i.id
     </sql>
 
@@ -130,5 +130,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectDeviceStatusListByDeviceIds" parameterType="String" resultMap="DeviceStatusResult">
+        <include refid="selectDeviceStatusVo"/>
+        where t.device_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

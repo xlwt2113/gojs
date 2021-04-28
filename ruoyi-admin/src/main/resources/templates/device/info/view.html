@@ -9,6 +9,11 @@
 
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
     <table class="table table-bordered" th:object="${deviceInfo}">
+        <caption>设备信息</caption>
+        <tr>
+            <th style="background-color: #efefef">设备归属</th>
+            <td colspan="3" th:text="*{dept.deptName}"></td>
+        </tr>
         <tr>
             <th style="background-color: #efefef">设备名称</th>
             <td th:text="*{deviceName}"></td>
@@ -54,6 +59,29 @@
         <tr>
             <th style="background-color: #efefef">备注</th>
             <td th:text="*{note}" colspan="3"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered" th:object="${deviceStatus}">
+        <caption>状态信息</caption>
+        <tr>
+            <th style="background-color: #efefef">实时状态</th>
+            <td th:text="*{@dict.getLabel('device_status', deviceStatus)}"></td>
+            <th style="background-color: #efefef">丢包率</th>
+            <td th:text="*{pingLoss}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">状态更新时间</th>
+            <td th:text="*{#dates.format(updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <th style="background-color: #efefef">ping平均时延</th>
+            <td th:text="*{pingAvg}"></td>
+        </tr>
+        <tr>
+            <th style="background-color: #efefef">最大时延</th>
+            <td th:text="*{pingMax}"></td>
+            <th style="background-color: #efefef">最小时延</th>
+            <td th:text="*{pingMin}"></td>
         </tr>
         </tbody>
     </table>

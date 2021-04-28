@@ -1,6 +1,11 @@
 package com.ruoyi.device.controller;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.device.domain.DeviceStatus;
+import com.ruoyi.device.service.IDeviceStatusService;
+import com.ruoyi.system.service.ISysDeptService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +39,12 @@ public class DeviceInfoController extends BaseController
     @Autowired
     private IDeviceInfoService deviceInfoService;
 
+    @Autowired
+    private IDeviceStatusService deviceStatusService;
+
+    @Autowired
+    private ISysDeptService deptService;
+
     @RequiresPermissions("device:info:view")
     @GetMapping()
     public String info()
@@ -43,9 +54,29 @@ public class DeviceInfoController extends BaseController
 
     @RequiresPermissions("device:info:view")
     @GetMapping("/view/{id}")
-    public String view(@PathVariable("id") Integer id, ModelMap mmap)
+    public String view(@PathVariable("id") Long id, ModelMap mmap)
     {
+        // 获取设备信息
         DeviceInfo deviceInfo = deviceInfoService.selectDeviceInfoById(id);
+        // 获取状态信息
+        DeviceStatus param = new DeviceStatus();
+        param.setDeviceId(id);
+        List<DeviceStatus> list = deviceStatusService.selectDeviceStatusList(param);
+        if(!list.isEmpty()){
+            mmap.put("deviceStatus",list.get(0));
+        }else{
+            mmap.put("deviceStatus",new DeviceStatus());
+        }
+        // 获取部门层级
+        String[] deptIds = deviceInfo.getDept().getAncestors().split(",");
+        String deptName = "";
+        for(String deptId: deptIds){
+            if(Long.parseLong(deptId)!=0){
+                SysDept dept = deptService.selectDeptById(Long.parseLong(deptId));
+                deptName = deptName + dept.getDeptName() + " - ";
+            }
+        }
+        deviceInfo.getDept().setDeptName(deptName + deviceInfo.getDept().getDeptName());
         mmap.put("deviceInfo", deviceInfo);
         return prefix + "/view";
     }
@@ -102,7 +133,7 @@ public class DeviceInfoController extends BaseController
      * 修改设备台账信息
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer id, ModelMap mmap)
+    public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
         DeviceInfo deviceInfo = deviceInfoService.selectDeviceInfoById(id);
         mmap.put("deviceInfo", deviceInfo);

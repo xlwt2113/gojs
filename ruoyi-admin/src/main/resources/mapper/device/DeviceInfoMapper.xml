@@ -31,8 +31,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <id     property="deptId"   column="dept_id"     />
         <result property="parentId" column="parent_id"   />
         <result property="deptName" column="dept_name"   />
+        <result property="ancestors"  column="ancestors"   />
         <result property="orderNum" column="order_num"   />
         <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
         <result property="status"   column="dept_status" />
     </resultMap>
 
@@ -55,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="selectDeviceInfoById" parameterType="Integer" resultMap="DeviceInfoResult">
+    <select id="selectDeviceInfoById" parameterType="Long" resultMap="DeviceInfoResult">
         <include refid="selectDeviceInfoVo"/>
         where u.id = #{id}
     </select>
@@ -129,7 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteDeviceInfoById" parameterType="Integer">
+    <delete id="deleteDeviceInfoById" parameterType="Long">
         delete from device_info where id = #{id}
     </delete>
 

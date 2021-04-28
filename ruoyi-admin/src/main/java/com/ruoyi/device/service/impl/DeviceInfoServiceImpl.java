@@ -10,31 +10,31 @@ import com.ruoyi.common.core.text.Convert;
 
 /**
  * 设备台账信息Service业务层处理
- * 
+ *
  * @author 王涛
  * @date 2021-04-27
  */
 @Service
-public class DeviceInfoServiceImpl implements IDeviceInfoService 
+public class DeviceInfoServiceImpl implements IDeviceInfoService
 {
     @Autowired
     private DeviceInfoMapper deviceInfoMapper;
 
     /**
      * 查询设备台账信息
-     * 
+     *
      * @param id 设备台账信息ID
      * @return 设备台账信息
      */
     @Override
-    public DeviceInfo selectDeviceInfoById(Integer id)
+    public DeviceInfo selectDeviceInfoById(Long id)
     {
         return deviceInfoMapper.selectDeviceInfoById(id);
     }
 
     /**
      * 查询设备台账信息列表
-     * 
+     *
      * @param deviceInfo 设备台账信息
      * @return 设备台账信息
      */
@@ -46,7 +46,7 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
 
     /**
      * 新增设备台账信息
-     * 
+     *
      * @param deviceInfo 设备台账信息
      * @return 结果
      */
@@ -58,7 +58,7 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
 
     /**
      * 修改设备台账信息
-     * 
+     *
      * @param deviceInfo 设备台账信息
      * @return 结果
      */
@@ -70,7 +70,7 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
 
     /**
      * 删除设备台账信息对象
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
@@ -82,12 +82,12 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
 
     /**
      * 删除设备台账信息信息
-     * 
+     *
      * @param id 设备台账信息ID
      * @return 结果
      */
     @Override
-    public int deleteDeviceInfoById(Integer id)
+    public int deleteDeviceInfoById(Long id)
     {
         return deviceInfoMapper.deleteDeviceInfoById(id);
     }

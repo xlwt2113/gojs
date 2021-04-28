@@ -21,7 +21,7 @@ public class DeviceInfo extends BaseEntity
     private SysDept dept;
 
     /**  */
-    private Integer id;
+    private Long id;
 
     /** 设备名称 */
     @Excel(name = "设备名称")
@@ -96,12 +96,12 @@ public class DeviceInfo extends BaseEntity
     @Excel(name = "归属部门")
     private Long deptId;
 
-    public void setId(Integer id)
+    public void setId(Long id)
     {
         this.id = id;
     }
 
-    public Integer getId()
+    public Long getId()
     {
         return id;
     }
