@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectDeviceStatusVo">
    SELECT
-            t.id, device_id, device_status, update_time, ping_avg, t.note, ping_min, ping_max, ping_loss,
+             device_id, device_status, update_time, ping_avg, t.note, ping_min, ping_max, ping_loss,
             device_name,
             device_model,
             manufacturer,
@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectDeviceStatusById" parameterType="Long" resultMap="DeviceStatusResult">
         <include refid="selectDeviceStatusVo"/>
-        where t.id = #{id}
+        where t.device_id = #{id}
     </select>
 
     <insert id="insertDeviceStatus" parameterType="DeviceStatus" useGeneratedKeys="true" keyProperty="id">

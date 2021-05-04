@@ -9,9 +9,49 @@
     <script th:inline="javascript">
         var deviceStatusDatas = [[${@dict.getType('device_status')}]];
 
+       var columnOption = {
+           title: {
+               text: '设备告警次数对比',
+               x: 'center'
+           },
+            xAxis: {
+                type: 'category',
+                data: ['dev1', 'dev2', 'dev3', 'dev4', 'dev5', 'dev6', 'dev7']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [120, 200, 150, 80, 70, 110, 130],
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                }
+            }]
+        };
+
+        var lineOption = {
+            title: {
+                text: '设备一周告警次数统计',
+                x: 'center'
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [150, 230, 224, 218, 135, 147, 260],
+                type: 'line'
+            }]
+        };
+
         var pieoption = {
             title: {
-                text: '设备状态统计',
+                text: '设备当前状态统计',
                 x: 'center'
             },
             tooltip: {
@@ -128,7 +168,7 @@
             }
 
             // define the Node templates for regular nodes
-            myDiagram.nodeTemplateMap.add("test",  // the default category
+            myDiagram.nodeTemplateMap.add("devNode",  // the default category
                 GO(go.Node, "Auto", nodeStyle(),
                     GO(go.Shape, "RoundedRectangle", {'fill': 'lightblue'}),
                     GO(go.Panel, "Table",
@@ -137,19 +177,28 @@
                             row: 0,
                             column: 0,
                             columnSpan: 2,
-                            width: 64,
-                            height: 64
+                            width: 100,
+                            height: 80
                         }, new go.Binding("source", "imgUrl")),
-                        GO(go.TextBlock, {row: 1, column: 0, columnSpan: 2, font: "bold 12pt sans-serif"},
-                            new go.Binding("text", "deviceName"), {margin: 5}),
-                        GO(go.TextBlock, {row: 2, column: 0}, "设备型号:", {margin: 5}),
-                        GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "deviceModel")),
-                        GO(go.TextBlock, {row: 3, column: 0}, "设备分类:", {margin: 5}),
-                        GO(go.TextBlock, {row: 3, column: 1}, new go.Binding("text", "deviceType")),
-                        GO(go.TextBlock, {row: 4, column: 0}, "  IP地址:", {margin: 5}),
-                        GO(go.TextBlock, {row: 4, column: 1}, new go.Binding("text", "ip")),
-                        GO(go.TextBlock, {row: 5, column: 0}, "  状态:", {margin: 5}),
-                        GO(go.TextBlock, {row: 5, column: 1}, new go.Binding("text", "status"))
+
+                        GO(go.TextBlock, {row: 1, column: 0}, new go.Binding("text", "deviceName"), {margin: 5}),
+                        GO(go.Shape, "Circle", {row: 1, column: 1}, {
+                            segmentIndex: 0,
+                            width: 15,
+                            height: 15,
+                            fill: 'lightblue',
+                            strokeWidth: 0
+                        }, new go.Binding('fill', 'status'))
+
+
+                        // GO(go.TextBlock, {row: 2, column: 0}, "设备型号:", {margin: 5}),
+                        // GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "deviceModel")),
+                        // GO(go.TextBlock, {row: 3, column: 0}, "设备分类:", {margin: 5}),
+                        // GO(go.TextBlock, {row: 3, column: 1}, new go.Binding("text", "deviceType")),
+                        // GO(go.TextBlock, {row: 4, column: 0}, "  IP地址:", {margin: 5}),
+                        // GO(go.TextBlock, {row: 4, column: 1}, new go.Binding("text", "ip")),
+                        // GO(go.TextBlock, {row: 2, column: 0}, "  状态:", {margin: 5}),
+                        // GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "status"))
                     ),
                     // four named ports, one on each side:
                     makePort("T", go.Spot.Top, go.Spot.TopSide, false, false),
@@ -239,22 +288,15 @@
 
         function load() {
             myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+            setInterval(function () {
+                searchDeviceStatus();
+            }, 25000);
         }
 
-        // 变更设备状态
-        function chanageState() {
-            var model = myDiagram.model;
-            var arr = model.nodeDataArray;
-            for (var i = 0; i < arr.length; i++) {
-                data = arr[i];
-                data.deviceType = "aaaabbbbcccc";
-                console.log(data.key);
-                model.updateTargetBindings(data);
-            }
-        }
 
         //获取设备状态信息
         function searchDeviceStatus() {
+            console.log('正在更新设备状态@');
             var model = myDiagram.model;
             var arr = model.nodeDataArray;
             var deviceIds = '';
@@ -271,7 +313,13 @@
                     var nodeData = arr[i];
                     $.each(response.data, function (i, item) {
                         if (nodeData.key == item.deviceId) {
-                            nodeData.status = $.table.selectDictLabelNoSpan(deviceStatusDatas, item.deviceStatus);
+                            if (item.deviceStatus == '1') {
+                                nodeData.status = 'green';
+                            } else if (item.deviceStatus == '2') {
+                                nodeData.status = 'yellow';
+                            } else {
+                                nodeData.status = 'red';
+                            }
                             model.updateTargetBindings(nodeData);
                         }
                     });
@@ -281,13 +329,13 @@
                 var commonCnt = 0;
                 var badCnt = 0;
                 $.each(response.data, function (i, item) {
-                    if(item.deviceStatus == 1){
+                    if (item.deviceStatus == 1) {
                         goodCnt++;
                     }
-                    if(item.deviceStatus == 2){
+                    if (item.deviceStatus == 2) {
                         commonCnt++;
                     }
-                    if(item.deviceStatus == 3){
+                    if (item.deviceStatus == 3) {
                         badCnt++;
                     }
                 });
@@ -308,35 +356,18 @@
 </head>
 <body class="gray-bg" onload="init()">
 <div class="row" id="sample">
-    <div class="col-sm-9">
-        <div style="width: 100%; display: flex; justify-content: space-between">
-            <div id="myDiagramDiv" style="flex-grow: 1; height: 870px; background-color: #282c34;"></div>
-        </div>
+    <div class="col-md-9">
+        <div id="myDiagramDiv" style="flex-grow: 1; background-color: #282c34;"></div>
     </div>
-    <div class="col-sm-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>饼状图</h5>
-            </div>
-            <div class="ibox-content">
-                <div class="echarts" id="echarts-pie-chart" _echarts_instance_="ec_1618838263635"
-                     style="-webkit-tap-highlight-color: transparent; user-select: none; position: relative;">
-                    <div style="position: relative; overflow: hidden; width: 778px; height: 240px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;">
-                        <canvas data-zr-dom-id="zr_0" width="778" height="240"
-                                style="position: absolute; left: 0px; top: 0px; width: 778px; height: 240px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas>
-                    </div>
-                    <div style="position: absolute; display: none; border-style: solid; white-space: nowrap; z-index: 9999999; transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s; background-color: rgba(50, 50, 50, 0.7); border-width: 0px; border-color: rgb(51, 51, 51); border-radius: 4px; color: rgb(255, 255, 255); font: 14px / 21px sans-serif; padding: 5px; left: 271px; top: 93px; pointer-events: none;">
-                        访问来源 <br>搜索引擎 : 1548 (60.42%)
-                    </div>
-                </div>
-            </div>
-        </div>
-        <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
-        <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
-        <button onclick="searchDeviceStatus()">更新设备状态</button>
+    <div class="col-md-3">
+        <div style="padding-top: 10px" class="echarts" id="echarts-pie-chart"></div>
+        <div id="lineChart"  class="echarts" ></div>
+        <div id="columnChart"  class="echarts" ></div>
     </div>
 </div>
-</div>
+<input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
+<input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
+<!--        <button onclick="searchDeviceStatus()">更新设备状态</button>-->
 <th:block th:include="include :: footer"/>
 </body>
 </html>
@@ -345,5 +376,19 @@
 <script th:inline="javascript">
     var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
     pieChart.setOption(pieoption);
+    var myChart = echarts.init(document.getElementById('lineChart'));
+    myChart.setOption(lineOption);
+    var myChart2 = echarts.init(document.getElementById('columnChart'));
+    myChart2.setOption(columnOption);
+
     $(window).resize(pieChart.resize);
+    $(function () {
+        // 设置高度，避免出现滚动条
+        $('#myDiagramDiv').css({'height': $(window).height()});
+        $(window).resize(function(){
+            $('#myDiagramDiv').css({'height': $(window).height()});
+        });
+
+
+    });
 </script>

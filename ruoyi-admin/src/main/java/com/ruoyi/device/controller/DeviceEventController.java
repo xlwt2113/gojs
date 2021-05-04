@@ -21,7 +21,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 设备事件表Controller
- * 
+ *
  * @author 王涛
  * @date 2021-04-03
  */
@@ -33,6 +33,8 @@ public class DeviceEventController extends BaseController
 
     @Autowired
     private IDeviceEventService deviceEventService;
+
+
 
     @RequiresPermissions("device:event:view")
     @GetMapping()
