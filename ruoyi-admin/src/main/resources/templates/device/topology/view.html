@@ -61,7 +61,7 @@
             legend: {
                 orient: 'vertical',
                 x: 'left',
-                data: ['好', '一般', '差']
+                data: ['良好', '一般', '差', '中断/不存在']
             },
             calculable: true,
             series: [
@@ -71,9 +71,10 @@
                     radius: '55%',
                     center: ['50%', '60%'],
                     data: [
-                        {value: 0, name: '好'},
+                        {value: 0, name: '良好'},
                         {value: 0, name: '一般'},
-                        {value: 1, name: '差'},
+                        {value: 0, name: '差'},
+                        {value: 0, name: '中断/不存在'},
                     ]
                 }
             ]
@@ -141,8 +142,8 @@
                     {
                         fill: "transparent",  // changed to a color in the mouseEnter event handler
                         strokeWidth: 0,  // no stroke
-                        width: horizontal ? NaN : 8,  // if not stretching horizontally, just 8 wide
-                        height: !horizontal ? NaN : 8,  // if not stretching vertically, just 8 tall
+                        width:  horizontal ? 50 : 5,  // if not stretching horizontally, just 8 wide
+                        height: !horizontal ? 50 : 5,  // if not stretching vertically, just 8 tall
                         alignment: align,  // align the port on the main Shape
                         stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
                         portId: name,  // declare this object to be a "port"
@@ -160,28 +161,18 @@
                     });
             }
 
-            function textStyle() {
-                return {
-                    font: "bold 11pt Lato, Helvetica, Arial, sans-serif",
-                    stroke: "#F8F8F8"
-                }
-            }
 
-            // define the Node templates for regular nodes
-            myDiagram.nodeTemplateMap.add("devNode",  // the default category
-                GO(go.Node, "Auto", nodeStyle(),
-                    GO(go.Shape, "RoundedRectangle", {'fill': 'lightblue'}),
+            // 交换机
+            myDiagram.nodeTemplateMap.add("switch",
+                GO(go.Node, "Auto",nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle",{'fill':'#282c34',strokeWidth: 0}),
                     GO(go.Panel, "Table",
-                        {defaultAlignment: go.Spot.Left},
-                        GO(go.Picture, {
-                            row: 0,
-                            column: 0,
-                            columnSpan: 2,
-                            width: 100,
-                            height: 80
-                        }, new go.Binding("source", "imgUrl")),
-
-                        GO(go.TextBlock, {row: 1, column: 0}, new go.Binding("text", "deviceName"), {margin: 5}),
+                        { defaultAlignment: go.Spot.Center },
+                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 32, height: 32,source: '/img/devType/1.jpeg',toSpot: go.Spot.Top,
+                            toLinkable: true,fromLinkable: true}, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, { row: 1, column: 0,stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true,fromLinkable: true },
+                            new go.Binding("text", "deviceName"),{margin: 5}),
                         GO(go.Shape, "Circle", {row: 1, column: 1}, {
                             segmentIndex: 0,
                             width: 15,
@@ -189,22 +180,93 @@
                             fill: 'lightblue',
                             strokeWidth: 0
                         }, new go.Binding('fill', 'status'))
-
-
-                        // GO(go.TextBlock, {row: 2, column: 0}, "设备型号:", {margin: 5}),
-                        // GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "deviceModel")),
-                        // GO(go.TextBlock, {row: 3, column: 0}, "设备分类:", {margin: 5}),
-                        // GO(go.TextBlock, {row: 3, column: 1}, new go.Binding("text", "deviceType")),
-                        // GO(go.TextBlock, {row: 4, column: 0}, "  IP地址:", {margin: 5}),
-                        // GO(go.TextBlock, {row: 4, column: 1}, new go.Binding("text", "ip")),
-                        // GO(go.TextBlock, {row: 2, column: 0}, "  状态:", {margin: 5}),
-                        // GO(go.TextBlock, {row: 2, column: 1}, new go.Binding("text", "status"))
                     ),
                     // four named ports, one on each side:
-                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, false),
-                    makePort("L", go.Spot.Left, go.Spot.LeftSide, false, false),
-                    makePort("R", go.Spot.Right, go.Spot.RightSide, false, false),
-                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, false, false)
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            //路由器
+            myDiagram.nodeTemplateMap.add("router",
+                GO(go.Node, "Auto",nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle",{'fill':'#282c34',strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        { defaultAlignment: go.Spot.Center },
+                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 32, height: 32,source: '/img/devType/2.jpeg',toSpot: go.Spot.Top,
+                            toLinkable: true,fromLinkable: true}, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, { row: 1, column: 0,stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true,fromLinkable: true },
+                            new go.Binding("text", "deviceName"),{margin: 5}),
+                        GO(go.Shape, "Circle", {row: 1, column: 1}, {
+                            segmentIndex: 0,
+                            width: 15,
+                            height: 15,
+                            fill: 'lightblue',
+                            strokeWidth: 0
+                        }, new go.Binding('fill', 'status'))
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            //电力分站
+            myDiagram.nodeTemplateMap.add("powerSubstation",
+                GO(go.Node, "Auto",nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle",{'fill':'#282c34',strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        { defaultAlignment: go.Spot.Center },
+                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 32, height: 32,source: '/img/devType/3.jpeg',toSpot: go.Spot.Top,
+                            toLinkable: true,fromLinkable: true}, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, { row: 1, column: 0,stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true,fromLinkable: true },
+                            new go.Binding("text", "deviceName"),{margin: 5}),
+                        GO(go.Shape, "Circle", {row: 1, column: 1}, {
+                            segmentIndex: 0,
+                            width: 15,
+                            height: 15,
+                            fill: 'lightblue',
+                            strokeWidth: 0
+                        }, new go.Binding('fill', 'status'))
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            // 无线基站
+            myDiagram.nodeTemplateMap.add("wifi",
+                GO(go.Node, "Auto",nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle",{'fill':'#282c34',strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        { defaultAlignment: go.Spot.Center },
+                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 32, height: 32,source: '/img/devType/4.jpeg',toSpot: go.Spot.Top,
+                            toLinkable: true,fromLinkable: true}, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, { row: 1, column: 0,stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true,fromLinkable: true },
+                            new go.Binding("text", "deviceName"),{margin: 5}),
+                        GO(go.Shape, "Circle", {row: 1, column: 1}, {
+                            segmentIndex: 0,
+                            width: 15,
+                            height: 15,
+                            fill: 'lightblue',
+                            strokeWidth: 0
+                        }, new go.Binding('fill', 'status'))
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
                 )
             );
 
@@ -288,6 +350,7 @@
 
         function load() {
             myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+            searchDeviceStatus();
             setInterval(function () {
                 searchDeviceStatus();
             }, 25000);
@@ -317,8 +380,10 @@
                                 nodeData.status = 'green';
                             } else if (item.deviceStatus == '2') {
                                 nodeData.status = 'yellow';
-                            } else {
+                            } else if (item.deviceStatus == '3'){
                                 nodeData.status = 'red';
+                            }else {
+                                nodeData.status = 'grey';
                             }
                             model.updateTargetBindings(nodeData);
                         }
@@ -328,6 +393,7 @@
                 var goodCnt = 0;
                 var commonCnt = 0;
                 var badCnt = 0;
+                var otherCnt = 0;
                 $.each(response.data, function (i, item) {
                     if (item.deviceStatus == 1) {
                         goodCnt++;
@@ -338,12 +404,20 @@
                     if (item.deviceStatus == 3) {
                         badCnt++;
                     }
+                    if (item.deviceStatus >3){
+                        otherCnt++;
+                    }
+                    console.log("==="+item.deviceStatus);
                 });
+                console.log(goodCnt);
+                console.log(commonCnt);
+                console.log(badCnt);
 
                 pieoption.series[0].data = [
                     {value: goodCnt, name: '好'},
                     {value: commonCnt, name: '一般'},
                     {value: badCnt, name: '差'},
+                    {value: otherCnt, name: '终端/不存在'},
                 ];
 
                 pieChart.setOption(pieoption);

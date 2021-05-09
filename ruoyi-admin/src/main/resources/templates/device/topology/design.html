@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('拓扑设备管理')"/>
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
@@ -36,12 +36,12 @@
                     console.log('点击了' + part.data.key);
                     console.log(part.data.deviceName);
                     // part.data.text = $('#test').val();
-                    if(selectedDevice){
+                    if (selectedDevice) {
                         part.data.deviceName = selectedDevice.deviceName;
-                        part.data.deviceType = $.table.selectDictLabel(deviceTypeDatas, selectedDevice.deviceType).replace("<span class=''>","").replace("</span>","");
-                        part.data.deviceModel = $.table.selectDictLabel(deviceModelDatas, selectedDevice.deviceModel).replace("<span class=''>","").replace("</span>","");
+                        part.data.deviceType = $.table.selectDictLabel(deviceTypeDatas, selectedDevice.deviceType).replace("<span class=''>", "").replace("</span>", "");
+                        part.data.deviceModel = $.table.selectDictLabel(deviceModelDatas, selectedDevice.deviceModel).replace("<span class=''>", "").replace("</span>", "");
                         part.data.ip = selectedDevice.deviceIp1;
-                        part.data.imgUrl = "/img/devType/"+selectedDevice.deviceType+".jpeg";
+                        part.data.imgUrl = "/img/devType/" + selectedDevice.deviceType + ".jpeg";
                         part.data.key = selectedDevice.id;
                         console.log(selectedDevice.deviceIp1);
                         myDiagram.model = go.Model.fromJson(myDiagram.model.toJson());
@@ -90,8 +90,8 @@
                     {
                         fill: "transparent",  // changed to a color in the mouseEnter event handler
                         strokeWidth: 0,  // no stroke
-                        width: horizontal ? NaN : 8,  // if not stretching horizontally, just 8 wide
-                        height: !horizontal ? NaN : 8,  // if not stretching vertically, just 8 tall
+                        width: horizontal ? 50 : 5,  // if not stretching horizontally, just 8 wide
+                        height: !horizontal ? 50 : 5,  // if not stretching vertically, just 8 tall
                         alignment: align,  // align the port on the main Shape
                         stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
                         portId: name,  // declare this object to be a "port"
@@ -118,26 +118,128 @@
 
             // define the Node templates for regular nodes
 
-            myDiagram.nodeTemplateMap.add("devNode",  // the default category
-                GO(go.Node, "Auto",nodeStyle(),
-                    GO(go.Shape, "RoundedRectangle",{'fill':'lightblue'}),
+
+            // 交换机
+            myDiagram.nodeTemplateMap.add("switch",
+                GO(go.Node, "Auto", nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle", {'fill': '#282c34', strokeWidth: 0}),
                     GO(go.Panel, "Table",
-                        { defaultAlignment: go.Spot.Left },
-                        GO(go.Picture,{ row: 0, column: 0, columnSpan: 2, width: 100, height: 80}, new go.Binding("source", "imgUrl")),
-                        GO(go.TextBlock, { row: 1, column: 0, columnSpan: 2 },
-                            new go.Binding("text", "deviceName"),{margin: 5}),
-                        // GO(go.TextBlock, { row: 2, column: 0 }, "设备型号:",{margin: 5}),
-                        // GO(go.TextBlock, { row: 2, column: 1 }, new go.Binding("text", "deviceModel")),
-                        // GO(go.TextBlock, { row: 3, column: 0 }, "设备分类:",{margin: 5}),
-                        // GO(go.TextBlock, { row: 3, column: 1 }, new go.Binding("text", "deviceType")),
-                        // GO(go.TextBlock, { row: 4, column: 0 }, "  IP地址:",{margin: 5}),
-                        // GO(go.TextBlock, { row: 4, column: 1 }, new go.Binding("text", "ip"))
+                        {defaultAlignment: go.Spot.Center},
+                        GO(go.Picture, {
+                            row: 0,
+                            column: 0,
+                            columnSpan: 2,
+                            width: 32,
+                            height: 32,
+                            source: '/img/devType/1.jpeg',
+                            toSpot: go.Spot.Top,
+                            toLinkable: true,
+                            fromLinkable: true
+                        }, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, {
+                                row: 1, column: 0, columnSpan: 2, stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true, fromLinkable: true
+                            },
+                            new go.Binding("text", "deviceName"), {margin: 5}),
                     ),
                     // four named ports, one on each side:
-                    makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
                     makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
                     makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
-                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            //路由器
+            myDiagram.nodeTemplateMap.add("router",
+                GO(go.Node, "Auto", nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle", {'fill': '#282c34', strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        {defaultAlignment: go.Spot.Center},
+                        GO(go.Picture, {
+                            row: 0,
+                            column: 0,
+                            columnSpan: 2,
+                            width: 32,
+                            height: 32,
+                            source: '/img/devType/2.jpeg',
+                            toSpot: go.Spot.Top,
+                            toLinkable: true,
+                            fromLinkable: true
+                        }, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, {
+                                row: 1, column: 0, columnSpan: 2, stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true, fromLinkable: true
+                            },
+                            new go.Binding("text", "deviceName"), {margin: 5}),
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            //电力分站
+            myDiagram.nodeTemplateMap.add("powerSubstation",
+                GO(go.Node, "Auto", nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle", {'fill': '#282c34', strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        {defaultAlignment: go.Spot.Center},
+                        GO(go.Picture, {
+                            row: 0,
+                            column: 0,
+                            columnSpan: 2,
+                            width: 32,
+                            height: 32,
+                            source: '/img/devType/3.jpeg',
+                            toSpot: go.Spot.Top,
+                            toLinkable: true,
+                            fromLinkable: true
+                        }, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, {
+                                row: 1, column: 0, columnSpan: 2, stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true, fromLinkable: true
+                            },
+                            new go.Binding("text", "deviceName"), {margin: 5}),
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
+                )
+            );
+
+            // 无线基站
+            myDiagram.nodeTemplateMap.add("wifi",
+                GO(go.Node, "Auto", nodeStyle(),
+                    GO(go.Shape, "RoundedRectangle", {'fill': '#282c34', strokeWidth: 0}),
+                    GO(go.Panel, "Table",
+                        {defaultAlignment: go.Spot.Center},
+                        GO(go.Picture, {
+                            row: 0,
+                            column: 0,
+                            columnSpan: 2,
+                            width: 32,
+                            height: 32,
+                            source: '/img/devType/4.jpeg',
+                            toSpot: go.Spot.Top,
+                            toLinkable: true,
+                            fromLinkable: true
+                        }, new go.Binding("source", "imgUrl")),
+                        GO(go.TextBlock, {
+                                row: 1, column: 0, columnSpan: 2, stroke: "white", toSpot: go.Spot.Bottom,
+                                toLinkable: true, fromLinkable: true
+                            },
+                            new go.Binding("text", "deviceName"), {margin: 5}),
+                    ),
+                    // four named ports, one on each side:
+                    makePort("T", go.Spot.Top, go.Spot.TopSide, true, true),
+                    makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+                    makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+                    makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, true)
                 )
             );
 
@@ -170,8 +272,6 @@
                         new go.Binding("stroke", "isSelected", function (sel) {
                             return sel ? "dodgerblue" : "gray";
                         }).ofObject()),
-                    GO(go.Shape,  // the arrowhead
-                        {toArrow: "standard", strokeWidth: 0, fill: "gray"}),
                     GO(go.Panel, "Auto",  // the link label, normally not visible
                         {visible: false, name: "LABEL", segmentIndex: 2, segmentFraction: 0.5},
                         new go.Binding("visible", "visible").makeTwoWay(),
@@ -212,9 +312,38 @@
 
                         nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
                         model: new go.GraphLinksModel([  // specify the contents of the Palette
-                            // {category: "router", text: "路由器",devType:'设备分类',devClass:'设备型号',ip:'192.178.1.1',img:""},
-                            // {category: "switch", text: "交换机"},
-                            {category: "devNode", deviceName: "", deviceModel: "", deviceType: "", ip: "",imgUrl:"https://gojs.net.cn/images/intro/100x65.pn"  },
+                            {
+                                category: "switch",
+                                deviceName: "交换机",
+                                deviceModel: "",
+                                deviceType: "",
+                                ip: "",
+                                imgUrl: "/img/devType/1.jpeg"
+                            },
+                            {
+                                category: "router",
+                                deviceName: "路由器",
+                                deviceModel: "",
+                                deviceType: "",
+                                ip: "",
+                                imgUrl: "/img/devType/2.jpeg"
+                            },
+                            {
+                                category: "powerSubstation",
+                                deviceName: "电力分站",
+                                deviceModel: "",
+                                deviceType: "",
+                                ip: "",
+                                imgUrl: "/img/devType/3.jpeg"
+                            },
+                            {
+                                category: "wifi",
+                                deviceName: "无线基站",
+                                deviceModel: "",
+                                deviceType: "",
+                                ip: "",
+                                imgUrl: "/img/devType/4.jpeg"
+                            },
                         ])
                     });
 
@@ -256,7 +385,10 @@
         function save() {
             document.getElementById("mySavedModel").value = myDiagram.model.toJson();
             myDiagram.isModified = false;
-            $.post("/device/topology/saveImageJson", { imageJson: myDiagram.model.toJson().toString(), id: $('#deviceTopologyId').val() } ,function () {
+            $.post("/device/topology/saveImageJson", {
+                imageJson: myDiagram.model.toJson().toString(),
+                id: $('#deviceTopologyId').val()
+            }, function () {
                 $.modal.msgSuccess("保存成功！")
             });
         }
@@ -293,7 +425,7 @@
 <div class="row" id="sample">
     <div class="col-sm-10">
         <div style="width: 100%; display: flex; justify-content: space-between">
-            <div id="myPaletteDiv" style="width: 180px; margin-right: 2px; background-color: #282c34;"></div>
+            <div id="myPaletteDiv" style="width: 90px; margin-right: 2px; background-color: #282c34;"></div>
             <div id="myDiagramDiv" style="flex-grow: 1; height: 870px; background-color: #282c34;"></div>
         </div>
     </div>
@@ -311,8 +443,8 @@
             </div>
             <button type="button" onclick="save()" class="btn btn-w-m btn-primary">保存</button>
             <button type="button" onclick="printDiagram()" class="btn btn-w-m btn-info">打印</button>
-<!--            <button type="button" onclick="load()" class="btn btn-w-m btn-default">加载</button>-->
-<!--            <textarea id="mySavedModel" style="width:100%;height:300px" th:field="${deviceTopology.imageData}"></textarea>-->
+            <!--            <button type="button" onclick="load()" class="btn btn-w-m btn-default">加载</button>-->
+            <!--            <textarea id="mySavedModel" style="width:100%;height:300px" th:field="${deviceTopology.imageData}"></textarea>-->
             <input type="hidden" id="mySavedModel" th:field="${deviceTopology.imageData}"/>
             <input type="hidden" id="deviceTopologyId" th:field="${deviceTopology.id}">
         </div>
@@ -327,7 +459,7 @@
     var deviceModelDatas = [[${@dict.getType('device_info_model')}]];
     var deviceTypeDatas = [[${@dict.getType('device_info_type')}]];
 
-    $(function(){
+    $(function () {
         var options = {
             url: "/device/info/list",
             showSearch: false,
@@ -372,7 +504,7 @@
     })
 
     // 获取选中设备
-    function onCheck(row, $element){
+    function onCheck(row, $element) {
         selectedDevice = row;
     }
 </script>
